@@ -1,0 +1,70 @@
+.branding-below {
+    bottom: 56px;
+    top: 0;
+  }
+  .branding-text {
+    left: 7px;
+    position: relative;
+    top: 3px;
+  }
+  .col-contain {
+    overflow: hidden;
+  }
+  .col-one {
+    float: left;
+    width: 50%;
+  }
+  .logo {
+    vertical-align: middle;
+  }
+  .radio-spacer {
+    height: 20px;
+  }
+  .width-100 {
+    width: 100%;
+  }
+  .container {
+    padding-bottom: 1em;
+  }
+  .reference {
+    background-color: rgba(0, 102, 153, 0.1080392);
+    padding: 0.5em;
+    margin-top: 0.5em;
+  }
+  .reference.recommendation {
+    background-color: #f2f2f2;
+  }
+  .reference.duplicate {
+    background-color: #ffebe6;
+  }
+  .reference.emptykey {
+    background-color: #ffebe6;
+  }
+  .reference.noreference {
+    background-color: #ffebe6;
+  }
+  .add-reference {
+    float: right;
+    cursor: pointer;
+  }
+  .link-reference {
+    float: right;
+    cursor: pointer;
+  }
+  .label {
+    margin-top: 0.5em;
+  }
+  #bibliography-form button {
+    margin-bottom: 0.5em;
+    width: 100%
+  }
+  input {
+    width: 100%
+  }
+  input.credentials-error {
+    background-color: #ffebe6 !important;
+  }
+  div.credentials-error {
+    display: none;
+    color: red;
+  }
