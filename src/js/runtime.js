@@ -1,57 +1,79 @@
+var CONFIG = null
 
+/**
+ * On document load, assign click handlers to each button and try to load the
+ * user's origin and destination language preferences if previously set.
+ */
+$(function() {
 
-//   /**
-    //    * On document load, assign click handlers to each button and try to load the
-    //    * user's origin and destination language preferences if previously set.
-    //    */
-    //    $(function() {
-    //     BibSonomy()
+    $('input[name=search]').change(searchResources);
 
-    //     $('input[name=search]').change(searchResources);
+    $('button[id=bibliography-check]').click(checkReferences);
+    $('button[id=bibliography-format]').click(formatReferences);
+    $('button[id=bibliography-reset]').click(resetReferenceFormatting);
 
-    //     $('button[id=bibliography-check]').click(checkReferences);
-    //     $('button[id=bibliography-format]').click(formatReferences);
-    //     $('button[id=bibliography-reset]').click(resetReferenceFormatting);
+    $('button[id=credentials-set]').click(function(e) {return saveCredentials(true)});
+    $('button[id=credentials-new]').click(createCredentials);
 
-    //     $('button[id=credentials-set]').click(function(e) {return saveCredentials(true)});
-    //     $('button[id=credentials-new]').click(createCredentials);
+    // TODO: does not work
+    // $('button[id=add-comments]').click(addComments);
+    // $('button[id=remove-comments]').click(removeComments);
 
-    //     // TODO: does not work
-    //     // $('button[id=add-comments]').click(addComments);
-    //     // $('button[id=remove-comments]').click(removeComments);
+    // load config
+    google.script.run
+        .withSuccessHandler(config => {
 
-    //     google.script.run
-    //         .withSuccessHandler(integrateConfig)
-    //         .withFailureHandler(showError)
-    //         .runGetConfig();
-    //   });
+            CONFIG = config
 
-    //   function integrateConfig(config) {
-
-    //     $('input[id="bibsonomy-user"]')
-    //         .val(config.bibsonomy.user);
+            $('input[id="bibsonomy-user"]')
+                .val(config.bibsonomy.user);
         
-    //     $('input[id="bibsonomy-apikey"]')
-    //         .val(config.bibsonomy.apikey);
+            $('input[id="bibsonomy-apikey"]')
+                .val(config.bibsonomy.apikey);
 
-    //     saveCredentials(false)
-    //   }
+            checkCredentials(config.bibsonomy.user, config.bibsonomy.apikey)
+        })
+        .withFailureHandler(showError)
+        .runGetConfig();
+});
 
-    //   function checkReferences() {
+function saveCredentials(showPopup = true) {
 
-    //     $("button[id=bibliography-check]").removeClass("blue")
-    //     $("button[id=bibliography-check]").unbind('click')
-    //     google.script.run
-    //       .withSuccessHandler(e => {
-    //         $("button[id=bibliography-check]").addClass("blue")
-    //         $("button[id=bibliography-check]").click(checkReferences)
-    //       })
-    //       .withFailureHandler(e => {
-    //         $("button[id=bibliography-check]").addClass("blue")
-    //         $("button[id=bibliography-check]").click(checkReferences)
-    //       })
-    //       .checkReferences();
-    //   }
+    console.log("update credentials")
+
+    google.script.run
+        .withSuccessHandler(e => {
+            $("div[class=credentials-error]").hide()
+            $("input[id=bibsonomy-user]").removeClass("credentials-error")
+            $("input[id=bibsonomy-apikey]").removeClass("credentials-error")
+            console.log("update credentials: success")
+        })
+        .withFailureHandler(e => {
+            $("div[class=credentials-error]").show()
+            $("input[id=bibsonomy-user]").addClass("credentials-error")
+            $("input[id=bibsonomy-apikey]").addClass("credentials-error")
+            console.log("update credentials: failed")
+        })
+        .withUserObject(this)
+        .updateBibsonomyCredentials(bibsonomyUser, bibsonomyApikey, showPopup);
+
+    return false
+}
+
+function getCredentials() {
+    var bibsonomyUser = $('input[id=bibsonomy-user]').val();
+    var bibsonomyApikey = $('input[id=bibsonomy-apikey]').val();
+}
+
+function checkCredentials(user, apikey) {
+
+}
+
+function createCredentials() {
+    window.open("https://bibsonomy.org/register", "_blank");
+    return false
+}
+
 
     //   function formatReferences() {
 
