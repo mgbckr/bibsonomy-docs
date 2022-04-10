@@ -1,5 +1,4 @@
-
-function searchResources() {
+function searchReferences() {
 
     // reset results
     var container = $("#found-references")
@@ -41,7 +40,7 @@ function runSearchReferencesSuccess(results) {
 function formatReference(post, link) {
     // return post.bibtex.title
     console.log(post)
-    var element = $('<div><b><a href="' + link + '">' + post.bibtex.bibtexKey + '</a></b><br />' + post.bibtex.title + ', <i>' + post.bibtex.author.split(",")[0] + '</i> (' + post.bibtex.year + ')</div>')
+    var element = $('<div><b><a href="' + link + '">' + post.bibtex.bibtexKey + '</a></b><br />' + post.bibtex.title + ', <i>' + post.bibtex.author.split(",")[0] + ' et al.</i> (' + post.bibtex.year + ')</div>')
     element.find("a").click(function () { window.open(link, "_blank") })
     return element
 }
