@@ -1,41 +1,20 @@
 var CONFIG = null
 
-/**
- * On document load, assign click handlers to each button and try to load the
- * user's origin and destination language preferences if previously set.
- */
-$(function() {
+function callbackGetConfig(config) {
 
-    $('input[name=search]').change(searchResources);
+    CONFIG = config
 
-    $('button[id=bibliography-check]').click(checkReferences);
-    $('button[id=bibliography-format]').click(formatReferences);
-    $('button[id=bibliography-reset]').click(resetReferenceFormatting);
+    $('input[id="bibsonomy-user"]')
+        .val(config.bibsonomy.user);
 
-    $('button[id=credentials-set]').click(function(e) {return saveCredentials(true)});
-    $('button[id=credentials-new]').click(createCredentials);
+    $('input[id="bibsonomy-apikey"]')
+        .val(config.bibsonomy.apikey);
 
-    // TODO: does not work
-    // $('button[id=add-comments]').click(addComments);
-    // $('button[id=remove-comments]').click(removeComments);
+    checkCredentials(
+        config.bibsonomy.user, 
+        config.bibsonomy.apikey)
 
-    // load config
-    google.script.run
-        .withSuccessHandler(config => {
-
-            CONFIG = config
-
-            $('input[id="bibsonomy-user"]')
-                .val(config.bibsonomy.user);
-        
-            $('input[id="bibsonomy-apikey"]')
-                .val(config.bibsonomy.apikey);
-
-            checkCredentials(config.bibsonomy.user, config.bibsonomy.apikey)
-        })
-        .withFailureHandler(showError)
-        .runGetConfig();
-});
+}
 
 function saveCredentials(showPopup = true) {
 
@@ -69,7 +48,7 @@ function checkCredentials(user, apikey) {
 
 }
 
-function createCredentials() {
+function openBibsonomyRegisterDialog() {
     window.open("https://bibsonomy.org/register", "_blank");
     return false
 }
