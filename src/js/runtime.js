@@ -1,57 +1,3 @@
-var CONFIG = null
-
-function callbackGetConfig(config) {
-
-    CONFIG = config
-
-    $('input[id="bibsonomy-user"]')
-        .val(config.bibsonomy.user);
-
-    $('input[id="bibsonomy-apikey"]')
-        .val(config.bibsonomy.apikey);
-
-    checkCredentials(
-        config.bibsonomy.user, 
-        config.bibsonomy.apikey)
-
-}
-
-function saveCredentials(showPopup = true) {
-
-    console.log("update credentials")
-
-    google.script.run
-        .withSuccessHandler(e => {
-            $("div[class=credentials-error]").hide()
-            $("input[id=bibsonomy-user]").removeClass("credentials-error")
-            $("input[id=bibsonomy-apikey]").removeClass("credentials-error")
-            console.log("update credentials: success")
-        })
-        .withFailureHandler(e => {
-            $("div[class=credentials-error]").show()
-            $("input[id=bibsonomy-user]").addClass("credentials-error")
-            $("input[id=bibsonomy-apikey]").addClass("credentials-error")
-            console.log("update credentials: failed")
-        })
-        .withUserObject(this)
-        .updateBibsonomyCredentials(bibsonomyUser, bibsonomyApikey, showPopup);
-
-    return false
-}
-
-function getCredentials() {
-    var bibsonomyUser = $('input[id=bibsonomy-user]').val();
-    var bibsonomyApikey = $('input[id=bibsonomy-apikey]').val();
-}
-
-function checkCredentials(user, apikey) {
-
-}
-
-function openBibsonomyRegisterDialog() {
-    window.open("https://bibsonomy.org/register", "_blank");
-    return false
-}
 
 
     //   function formatReferences() {
@@ -214,15 +160,6 @@ function openBibsonomyRegisterDialog() {
     //       container.append(refElement)
     //     }
     //   }
-
-    //   function formatReference(post, link) {
-    //     // return post.bibtex.title
-    //     console.log(post)
-    //     var element = $('<div><b><a href="' + link + '">' + post.bibtex.bibtexKey + '</a></b><br />' + post.bibtex.title + ', <i>' + post.bibtex.author.split(",")[0] + '</i> (' + post.bibtex.year + ')</div>')
-    //     element.find("a").click(function() {window.open(link, "_blank")})
-    //     return element
-    //   }
-
     //   function resetReferences() {
     //     $('#selected-references').html("None");
     //   }
@@ -260,39 +197,7 @@ function openBibsonomyRegisterDialog() {
     //     window.open("https://bibsonomy.org/register", "_blank");
     //     return false
     //   }
-
-    //   function searchResources() {
-    //     var query = $("input[name=search]").val()
-    //     console.log("Search:", query)
-    //     if (!query || /^\s*$/.test(query)) {
-    //       $("#found-references").html("")
-    //     } else {
-    //       google.script.run
-    //         .withSuccessHandler(processSearchResults)
-    //         .withFailureHandler(showError)
-    //         .searchResources(query);
-    //     }
-    //   }
-
-    //   function processSearchResults(results) {
-    //     console.log(results)
-    //     var container = $("#found-references")
-    //     container.html("")
-    //     if (results.type == "ok" && "post" in results.data.posts) {
-    //       for (let post of results.data.posts.post) {
-    //         var hash = post.bibtex.interhash
-    //         var link = 'https://bibsonomy.org/bibtex/' + hash +'/' + $('#bibsonomy-user').val();
-    //         var msg = formatReference(post, link)
-    //         var ref = $('<div class="reference"><div class="add-reference">add</div></div>').append(msg);
-    //         ref.data("post", post)
-    //         ref.click(addReference)
-    //         container.append(ref)
-    //       } 
-    //     } else {
-    //         container.html("No resources found.")
-    //     }
-    //   }
-
+    //
     //   function addReference(e) {
     //     var post = $(this).data("post")
     //     console.log(post)
