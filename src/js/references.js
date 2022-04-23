@@ -1,10 +1,13 @@
 const REFERENCE_POLLING_INTERVAL_MILLISECONDS = 200
 
 keepPollingReferences = false
+pollingTimeout = null
+
+var referenceGroupCache = {}
 
 function startPollingReferences() {
     keepPollingReferences = true
-    setTimeout(pollReferences, REFERENCE_POLLING_INTERVAL_MILLISECONDS);
+    pollingTimeout = setTimeout(pollReferences, REFERENCE_POLLING_INTERVAL_MILLISECONDS);
 }
 
 function stopPollingReferences() {
@@ -13,6 +16,7 @@ function stopPollingReferences() {
 
 function pollReferences() {
 
+    
     google.script.run
         .withSuccessHandler(runGetMarkedReferenceGroupIdSuccess)
         .withFailureHandler(() => {
@@ -63,7 +67,6 @@ function processNewReferenceGroup(referenceGroup) {
     }
 }
 
-var referenceGroupCache = {}
 function getReferenceGroup(referenceGroupId, callback, useCache = true) {
 
     // try to access cache first ...
@@ -124,19 +127,21 @@ function setReferenceGroupLoading() {
     $('#selected-references').html("Loading ...");
 }
 
+function addReference(e) {
+    var post = $(this).data("post")
+    console.log(post)
+    setReferenceGroupLoading()
+    google.script.run
+        .withSuccessHandler(runAddToReferenceGroupSuccess)
+        .withFailureHandler(() => {alert("Something went getting the reference group."); console.log(post)})
+        .runAddPostToReferenceGroup(post, currentReferenceGroupId);
+}
 
-
-    //
-    //   function addReference(e) {
-    //     var post = $(this).data("post")
-    //     console.log(post)
-    //     google.script.run
-    //       .withSuccessHandler(bibtexKeyAdded)
-    //       .withFailureHandler(showError)
-    //       .runAddPostToReferenceGroup(post);
-    //   }
-
-    //   function bibtexKeyAdded() {
-    //     // nothing to do so far
-    //   }
+function runAddToReferenceGroupSuccess(response) {
+    console.log(response)
+    referenceGroupCache[response.group.id] = response.group
+    formatReferenceGroup(response.group)
+    
+// nothing to do so far
+}
 

@@ -29,7 +29,7 @@ function runSearchReferencesSuccess(results) {
             var msg = formatReference(post, link)
             var ref = $('<div class="reference"><div class="add-reference">add</div></div>').append(msg);
             ref.data("post", post)
-            // ref.click(addReference)
+            ref.click(addReference)  // see references.js
             container.append(ref)
         }
     } else {
