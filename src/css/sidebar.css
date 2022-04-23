@@ -47,6 +47,10 @@
     float: right;
     cursor: pointer;
   }
+  .remove-reference {
+    float: right;
+    cursor: pointer;
+  }
   .link-reference {
     float: right;
     cursor: pointer;

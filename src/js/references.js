@@ -16,7 +16,6 @@ function stopPollingReferences() {
 
 function pollReferences() {
 
-    
     google.script.run
         .withSuccessHandler(runGetMarkedReferenceGroupIdSuccess)
         .withFailureHandler(() => {
@@ -101,17 +100,20 @@ function formatReferenceGroup(referenceGroup) {
     var container = $("#selected-references")
     var wrapper = $('<div>')
     for (let ref of referenceGroup.references) {
-        console.log(ref)
+        // console.log(ref)
         var hash = ref.bibtex.interhash
         var link = 'https://bibsonomy.org/bibtex/' + hash +'/' + $('#bibsonomy-user').val();
         var msg = formatReference(ref, link)
 
         if (ref.recommendation) {
             // var refElement = $('<div class="reference recommendation"><div class="link-reference">link</div>Best match:<br /><b><a href="' + link + '">' + key + '</a></b><br />' + msg + '</div>');
-            var refElement = $('<div class="reference recommendation">Best match:</div>').append(msg);
+            var refElement = $('<div class="reference recommendation"><div class="remove-reference">remove</div>Best match:</div>').append(msg);
         } else {
-            var refElement = $('<div class="reference"></div>').append(msg);
+            var refElement = $('<div class="reference"><div class="remove-reference">remove</div></div>').append(msg);
         }
+        refElement.data("post", ref)
+        refElement.click(removeReference)  // see references.js
+
         wrapper.append(refElement)
     }
     container.html("")
@@ -132,16 +134,30 @@ function addReference(e) {
     console.log(post)
     setReferenceGroupLoading()
     google.script.run
-        .withSuccessHandler(runAddToReferenceGroupSuccess)
-        .withFailureHandler(() => {alert("Something went getting the reference group."); console.log(post)})
+        .withSuccessHandler(runUpdateToReferenceGroupSuccess)
+        .withFailureHandler(() => {alert("Something went wrong adding reference."); console.log(post)})
         .runAddPostToReferenceGroup(post, currentReferenceGroupId);
 }
 
-function runAddToReferenceGroupSuccess(response) {
+function removeReference(e) {
+    var post = $(this).data("post")
+    console.log("removing reference from group: " + currentReferenceGroupId)
+    console.log(post)
+    setReferenceGroupLoading()
+    google.script.run
+        .withSuccessHandler(runUpdateToReferenceGroupSuccess)
+        .withFailureHandler(() => {alert("Something went wrong removing reference."); console.log(post)})
+        .runRemovePostFromReferenceGroup(post, currentReferenceGroupId);
+}
+
+function runUpdateToReferenceGroupSuccess(response) {
     console.log(response)
-    referenceGroupCache[response.group.id] = response.group
-    formatReferenceGroup(response.group)
-    
-// nothing to do so far
+    if (response === null) {
+        setReferenceGroupNone()
+        currentReferenceGroupId = null
+    } else {
+        referenceGroupCache[response.group.id] = response.group
+        formatReferenceGroup(response.group)
+    }
 }
 
